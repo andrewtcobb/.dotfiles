@@ -1,4 +1,5 @@
 source ~/.proxy_url
+
 # Turns Proxy on
 proxy() {
     export http_proxy=$proxy_url
@@ -21,10 +22,16 @@ noproxy() {
     npm config delete https_proxy
 }
 
-noproxy
-if curl --output /dev/null --silent --head --fail "https://google.com"; then
-    echo "Off corporate network"
-else
-    echo "On corporate network"
-    proxy
-fi
+# Automatically sets correct proxy settings
+autoproxy() {
+	noproxy
+	if curl --output /dev/null --silent --head --fail "https://google.com"; then
+		echo "Off corporate network"
+		echo "Proxy settings disabled"
+	else
+		echo "On corporate network"
+		echo "Enabling proxy settings..."
+		proxy
+		echo "Done"
+	fi
+}
